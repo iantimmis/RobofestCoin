@@ -1,0 +1,35 @@
+=============== Apr 16, 2018 (EDT) ===============
+22:41:10.779168 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+22:41:10.779838 db@open opening
+22:41:10.782060 version@stat F·[] S·0B[] Sc·[]
+22:41:10.782357 db@janitor F·2 G·0
+22:41:10.782465 db@open done T·2.591535ms
+=============== Apr 16, 2018 (EDT) ===============
+22:42:03.595989 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+22:42:03.596925 version@stat F·[] S·0B[] Sc·[]
+22:42:03.596952 db@open opening
+22:42:03.597022 journal@recovery F·1
+22:42:03.603760 journal@recovery recovering @1
+22:42:03.604766 memdb@flush created L0@2 N·9 S·545B "H\x06\x13..\x9ad\xe7,v3":"r\x00\x00..\x9ad\xe7,v5"
+22:42:03.608709 version@stat F·[1] S·545B[545B] Sc·[0.25]
+22:42:03.609885 db@janitor F·3 G·0
+22:42:03.609937 db@open done T·12.968573ms
+=============== Apr 17, 2018 (EDT) ===============
+10:02:43.881701 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+10:02:43.882475 version@stat F·[1] S·545B[545B] Sc·[0.25]
+10:02:43.882507 db@open opening
+10:02:43.882583 journal@recovery F·1
+10:02:43.886285 journal@recovery recovering @3
+10:02:44.492893 memdb@flush created L0@5 N·173281 S·9MiB "\x00{\x81..`\xb0\xb2,v173269":"\xfe\xb1\xd6..\xa3\xdev,v294"
+10:02:44.497161 version@stat F·[2] S·9MiB[9MiB] Sc·[0.50]
+10:02:44.500297 db@janitor F·4 G·0
+10:02:44.500354 db@open done T·617.841589ms
+10:02:44.513016 table@compaction L0·2 -> L1·0 S·9MiB Q·173294
+10:02:44.568471 table@build created L1@8 N·47586 S·2MiB "\x00{\x81..`\xb0\xb2,v173269":"b\x00\x00...\x8c\xe0,v164543"
+10:02:44.622666 table@build created L1@9 N·30447 S·2MiB "b\x00\x00..]\x91q,v164545":"h\x00\x00..\xf2\xd6\xe0,v69649"
+10:02:44.677093 table@build created L1@10 N·30114 S·2MiB "h\x00\x00..\xd6\xe0t,v69647":"h\x00\x00..w\b2,v140014"
+10:02:44.722885 table@build created L1@11 N·36856 S·1MiB "h\x00\x00..\b2t,v140012":"\xfe\xb1\xd6..\xa3\xdev,v294"
+10:02:44.723349 version@stat F·[0 4] S·8MiB[0B 8MiB] Sc·[0.00 0.08]
+10:02:44.723575 table@compaction committed F+2 S-1MiB Ke·0 D·28287 T·210.516417ms
+10:02:44.724431 table@remove removed @5
+10:02:44.724846 table@remove removed @2
