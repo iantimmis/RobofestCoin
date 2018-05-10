@@ -3,7 +3,7 @@ pragma solidity ^0.4.0;
 interface ERC20 {
     function transferFrom(address _from, address _to, uint _value) external returns (bool);
     function approve(address _spender, uint _value) external returns (bool);
-    function allowance(address _owner, address _spender) external constant returns (uint);
+    function allowance(address _owner, address _spender) external view returns (uint);
     event Approval(address indexed _owner, address indexed _spender, uint _value);
 }
 
@@ -31,23 +31,23 @@ contract Token {
         _totalSupply = totalSupply;
     }
 
-    function name() public constant returns (string) {
+    function name() public view returns (string) {
         return _name;
     }
 
-    function symbol() public constant returns (string) {
+    function symbol() public view returns (string) {
         return _symbol;
     }
 
-    function decimals() public constant returns (uint8) {
+    function decimals() public view returns (uint8) {
         return _decimals;
     }
 
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return _totalSupply;
     }
 
-    function balanceOf(address _addr) public constant returns (uint);
+    function balanceOf(address _addr) public view returns (uint);
     function transfer(address _to, uint _value) public returns (bool);
     event Transfer(address indexed _from, address indexed _to, uint _value);
 }
@@ -86,11 +86,11 @@ contract RoboCore is Token("ROBO_t1", "Robofest Coin Test Version 1", 18, 100000
         _balanceOf[msg.sender] = _totalSupply;
     }
 
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return _totalSupply;
     }
 
-    function balanceOf(address _addr) public constant returns (uint) {
+    function balanceOf(address _addr) public view returns (uint) {
         return _balanceOf[_addr];
     }
 
@@ -119,7 +119,7 @@ contract RoboCore is Token("ROBO_t1", "Robofest Coin Test Version 1", 18, 100000
         return false;
     }
 
-    function isContract(address _addr) private constant returns (bool) {
+    function isContract(address _addr) private view returns (bool) {
         uint codeSize;
         assembly {
             codeSize := extcodesize(_addr)
@@ -146,7 +146,7 @@ contract RoboCore is Token("ROBO_t1", "Robofest Coin Test Version 1", 18, 100000
         return true;
     }
 
-    function allowance(address _owner, address _spender) external constant returns (uint) {
+    function allowance(address _owner, address _spender) external view returns (uint) {
         return _allowances[_owner][_spender];
     }
 }
@@ -154,6 +154,12 @@ contract RoboCore is Token("ROBO_t1", "Robofest Coin Test Version 1", 18, 100000
 contract RobofestCoin is RoboCore {
     
     address contractOwner;
+
+    mapping (address => bool) distro_addresses;
+    mapping (string => bool) distro_emails;
+
+    mapping (address => bool) register_addresses;
+    mapping (string => bool) register_emails;
 
     modifier auth {
         require(msg.sender == contractOwner);
@@ -164,13 +170,72 @@ contract RobofestCoin is RoboCore {
         contractOwner = msg.sender;
     }
 
-    function mint(uint256 _amount) public auth {
+    function mint(uint256 _amount) external auth {
         _balanceOf[contractOwner] = _balanceOf[contractOwner].add(_amount);
         _totalSupply = _totalSupply.add(_amount);
     }
 
-    function burn(uint256 _amount) public auth {
+    function burn(uint256 _amount) external auth {
         _balanceOf[contractOwner] = _balanceOf[contractOwner].sub(_amount);
         _totalSupply = _totalSupply.sub(_amount);
+    }
+
+    function transferFromPVT(address from, address to, uint value) private returns (bool) {
+        bool success = false;
+
+        if (value > 0 && _balanceOf[from] >= value) {
+            _balanceOf[from] = _balanceOf[from].sub(value);
+            _balanceOf[to] = _balanceOf[to].add(value);
+            success = true;
+        }
+
+        return success;
+    }
+
+    function distributeCoin(address addr, string email) external auth returns (bool) {
+        bool success = false;
+        
+        // Check if user is valid
+        if (distro_addresses[addr] == false && distro_emails[email] == false) {
+            
+            // Add 1 coin to address
+            if (transferFromPVT(contractOwner, addr, 1) == true) {
+                
+                // Distribute coin to user
+                success = true;
+                distro_addresses[addr] = true;
+                distro_emails[email] = true;
+            }
+        }
+        
+        return success;
+    }
+
+    function registerParticipant(address addr, string email) external auth returns (bool) {
+        bool success = false;
+        
+        // Check if participant is valid
+        if (register_addresses[addr] == false && register_emails[email] == false && _balanceOf[addr] >= 1)
+        {
+            success = true;
+
+            // Subtract 1 coin from address
+            if (transferFromPVT(addr, contractOwner, 1) == true) {
+                
+                // Register participant
+                register_addresses[addr] = true;
+                register_emails[email] = true;
+            }
+        }
+        
+        return success;
+    }
+
+    function isRegistered(address addr) external view returns (bool) {
+        return register_addresses[addr];
+    }
+
+    function isRegistered(string email) external view returns (bool) {
+        return register_emails[email];
     }
 }
